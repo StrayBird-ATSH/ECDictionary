@@ -2,12 +2,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Set;
 
 public class RedBlackTree<K, V> extends StringTree<String, String> {
-    private Entry<String, String> root;
-    private EntrySet<Entry<String, String>> entrySet;
+    private RBTreeEntry<String, String> root;
+    private EntrySet<RBTreeEntry<String, String>> entrySet;
     private static final boolean RED = false;
     private static final boolean BLACK = true;
 
@@ -16,13 +15,13 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
 
     @Override
     public String put(String key, String value) {
-        Entry<String, String> t = root;
+        RBTreeEntry<String, String> t = root;
         if (t == null) {
-            root = new Entry<>(key, value, null);
+            root = new RBTreeEntry<>(key, value, null);
             return null;
         }
         int cmp;
-        Entry<String, String> parent;
+        RBTreeEntry<String, String> parent;
         if (key == null)
             throw new NullPointerException();
         do {
@@ -35,7 +34,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
             else
                 return t.setValue(value);
         } while (t != null);
-        Entry<String, String> e = new Entry<>(key, value, parent);
+        RBTreeEntry<String, String> e = new RBTreeEntry<>(key, value, parent);
         if (cmp < 0)
             parent.left = e;
         else
@@ -47,16 +46,16 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     @Override
     public String get(Object object) {
         String key = object.toString();
-        Entry<String, String> p = getEntry(key);
+        RBTreeEntry<String, String> p = getEntry(key);
         return (p == null ? null : p.getValue());
     }
 
     @Contract("null -> fail")
     @Nullable
-    private Entry<String, String> getEntry(String key) {
+    private RedBlackTree.RBTreeEntry<String, String> getEntry(String key) {
         if (key == null)
             throw new NullPointerException();
-        Entry<String, String> p = root;
+        RBTreeEntry<String, String> p = root;
         while (p != null) {
             int cmp = key.compareTo(p.getKey());
             if (cmp < 0)
@@ -71,7 +70,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
 
     public String remove(Object object) {
         String key = object.toString();
-        Entry<String, String> p = getEntry(key);
+        RBTreeEntry<String, String> p = getEntry(key);
         if (p == null)
             return null;
         String oldValue = p.getValue();
@@ -79,14 +78,14 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         return oldValue;
     }
 
-    private void deleteEntry(@NotNull Entry<String, String> p) {
+    private void deleteEntry(@NotNull RedBlackTree.RBTreeEntry<String, String> p) {
         if (p.left != null && p.right != null) {
-            Entry<String, String> s = successor(p);
+            RBTreeEntry<String, String> s = successor(p);
             p.key = s.key;
             p.setValue(s.getValue());
             p = s;
         }
-        Entry<String, String> replacement = (p.left != null ? p.left : p.right);
+        RBTreeEntry<String, String> replacement = (p.left != null ? p.left : p.right);
         if (replacement != null) {
             replacement.parent = p.parent;
             if (p.parent == null)
@@ -114,17 +113,17 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     }
 
     @Contract(value = "null -> null", pure = true)
-    private static Entry<String, String> successor(Entry<String, String> t) {
+    private static RBTreeEntry<String, String> successor(RBTreeEntry<String, String> t) {
         if (t == null)
             return null;
         else if (t.right != null) {
-            Entry<String, String> p = t.right;
+            RBTreeEntry<String, String> p = t.right;
             while (p.left != null)
                 p = p.left;
             return p;
         } else {
-            Entry<String, String> p = t.parent;
-            Entry<String, String> ch = t;
+            RBTreeEntry<String, String> p = t.parent;
+            RBTreeEntry<String, String> ch = t;
             while (p != null && ch == p.right) {
                 ch = p;
                 p = p.parent;
@@ -133,11 +132,11 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         }
     }
 
-    private void fixAfterInsertion(@NotNull Entry<String, String> x) {
+    private void fixAfterInsertion(@NotNull RedBlackTree.RBTreeEntry<String, String> x) {
         x.color = RED;
         while (x != null && x != root && x.parent.color == RED) {
             if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
-                Entry<String, String> y = rightOf(parentOf(parentOf(x)));
+                RBTreeEntry<String, String> y = rightOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
@@ -153,7 +152,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
                     rotateRight(parentOf(parentOf(x)));
                 }
             } else {
-                Entry<String, String> y = leftOf(parentOf(parentOf(x)));
+                RBTreeEntry<String, String> y = leftOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
@@ -173,10 +172,10 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         root.color = BLACK;
     }
 
-    private void fixAfterDeletion(Entry<String, String> x) {
+    private void fixAfterDeletion(RBTreeEntry<String, String> x) {
         while (x != root && colorOf(x) == BLACK) {
             if (x == leftOf(parentOf(x))) {
-                Entry<String, String> sib = rightOf(parentOf(x));
+                RBTreeEntry<String, String> sib = rightOf(parentOf(x));
 
                 if (colorOf(sib) == RED) {
                     setColor(sib, BLACK);
@@ -203,7 +202,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
                     x = root;
                 }
             } else {
-                Entry<String, String> sib = leftOf(parentOf(x));
+                RBTreeEntry<String, String> sib = leftOf(parentOf(x));
 
                 if (colorOf(sib) == RED) {
                     setColor(sib, BLACK);
@@ -242,8 +241,8 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         String color;
         int level = 0;
         int child;
-        Entry<String, String> currentNode = root;
-        Entry<String, String> previousNode = null;
+        RBTreeEntry<String, String> currentNode = root;
+        RBTreeEntry<String, String> previousNode = null;
 
         while (true) {
             if (previousNode == null || previousNode == parentOf(currentNode)) {
@@ -287,33 +286,33 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     }
 
     @Contract(pure = true)
-    private static boolean colorOf(Entry<String, String> p) {
+    private static boolean colorOf(RBTreeEntry<String, String> p) {
         return (p == null ? BLACK : p.color);
     }
 
     @Contract(value = "null -> null", pure = true)
-    private static Entry<String, String> parentOf(Entry<String, String> p) {
+    private static RBTreeEntry<String, String> parentOf(RBTreeEntry<String, String> p) {
         return (p == null ? null : p.parent);
     }
 
-    private static void setColor(Entry<String, String> p, boolean c) {
+    private static void setColor(RBTreeEntry<String, String> p, boolean c) {
         if (p != null)
             p.color = c;
     }
 
     @Contract(value = "null -> null", pure = true)
-    private static Entry<String, String> leftOf(Entry<String, String> p) {
+    private static RBTreeEntry<String, String> leftOf(RBTreeEntry<String, String> p) {
         return (p == null) ? null : p.left;
     }
 
     @Contract(value = "null -> null", pure = true)
-    private static Entry<String, String> rightOf(Entry<String, String> p) {
+    private static RBTreeEntry<String, String> rightOf(RBTreeEntry<String, String> p) {
         return (p == null) ? null : p.right;
     }
 
-    private void rotateLeft(Entry<String, String> p) {
+    private void rotateLeft(RBTreeEntry<String, String> p) {
         if (p != null) {
-            Entry<String, String> r = p.right;
+            RBTreeEntry<String, String> r = p.right;
             p.right = r.left;
             if (r.left != null)
                 r.left.parent = p;
@@ -329,9 +328,9 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         }
     }
 
-    private void rotateRight(Entry<String, String> p) {
+    private void rotateRight(RBTreeEntry<String, String> p) {
         if (p != null) {
-            Entry<String, String> l = p.left;
+            RBTreeEntry<String, String> l = p.left;
             p.left = l.right;
             if (l.right != null) l.right.parent = p;
             l.parent = p.parent;
@@ -346,19 +345,19 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     }
 
     @NotNull
-    public Set<Map.Entry<String, String>> entrySet() {
+    public Set<Entry<String, String>> entrySet() {
         EntrySet es = entrySet;
-        return (es != null) ? es : (entrySet = new EntrySet<Entry<String, String>>());
+        return (es != null) ? es : (entrySet = new EntrySet<RBTreeEntry<String, String>>());
     }
 
-    private static final class Entry<K, V> extends AbstractEntry<String, String> {
+    private static final class RBTreeEntry<K, V> extends AbstractEntry<String, String> {
         String key;
-        Entry<String, String> left;
-        Entry<String, String> right;
-        Entry<String, String> parent;
+        RBTreeEntry<String, String> left;
+        RBTreeEntry<String, String> right;
+        RBTreeEntry<String, String> parent;
         boolean color = BLACK;
 
-        Entry(String key, String value, Entry<String, String> parent) {
+        RBTreeEntry(String key, String value, RBTreeEntry<String, String> parent) {
             super(key, value);
             this.key = key;
             this.parent = parent;
