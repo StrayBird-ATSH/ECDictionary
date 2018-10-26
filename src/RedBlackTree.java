@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class RedBlackTree<K, V> extends StringTree<String, String> {
-    private int size = 0;
     private Entry<String, String> root;
     private EntrySet<Entry<String, String>> entrySet;
     private static final boolean RED = false;
@@ -20,7 +19,6 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         Entry<String, String> t = root;
         if (t == null) {
             root = new Entry<>(key, value, null);
-            size = 1;
             return null;
         }
         int cmp;
@@ -43,7 +41,6 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         else
             parent.right = e;
         fixAfterInsertion(e);
-        size++;
         return null;
     }
 
@@ -83,22 +80,14 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     }
 
     private void deleteEntry(@NotNull Entry<String, String> p) {
-        size--;
-
-        // If strictly internal, copy successor's element to p and then make p
-        // point to successor.
         if (p.left != null && p.right != null) {
             Entry<String, String> s = successor(p);
             p.key = s.key;
-            p.value = s.value;
+            p.setValue(s.getValue());
             p = s;
-        } // p has 2 children
-
-        // Start fixup at replacement node, if it exists.
+        }
         Entry<String, String> replacement = (p.left != null ? p.left : p.right);
-
         if (replacement != null) {
-            // Link replacement to parent
             replacement.parent = p.parent;
             if (p.parent == null)
                 root = replacement;
@@ -106,19 +95,14 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
                 p.parent.left = replacement;
             else
                 p.parent.right = replacement;
-
-            // Null out links so they are OK to use by fixAfterDeletion.
             p.left = p.right = p.parent = null;
-
-            // Fix replacement
             if (p.color == BLACK)
                 fixAfterDeletion(replacement);
-        } else if (p.parent == null) { // return if we are the only node.
+        } else if (p.parent == null) {
             root = null;
-        } else { //  No children. Use self as phantom replacement and unlink.
+        } else {
             if (p.color == BLACK)
                 fixAfterDeletion(p);
-
             if (p.parent != null) {
                 if (p == p.parent.left)
                     p.parent.left = null;
@@ -218,7 +202,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
                     rotateLeft(parentOf(x));
                     x = root;
                 }
-            } else { // symmetric
+            } else {
                 Entry<String, String> sib = leftOf(parentOf(x));
 
                 if (colorOf(sib) == RED) {
@@ -264,8 +248,9 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         while (true) {
             if (previousNode == null || previousNode == parentOf(currentNode)) {
                 color = colorOf(currentNode) ? "BLACK" : "RED";
-                child = (currentNode == leftOf(parentOf(currentNode))) ? 0 : 1;
-                System.out.println("level=" + level + " child=" + child + currentNode.getValue() + "(" + color + ")");
+                child = (currentNode == rightOf(parentOf(currentNode))) ? 1 : 0;
+                System.out.println("level=" + level + " child=" + child + " " +
+                        currentNode.getKey() + "(" + color + ")");
                 previousNode = currentNode;
                 if (leftOf(currentNode) == null) {
                     System.out.println("level=" + (level + 1) + " child=0 null");
@@ -366,38 +351,22 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         return (es != null) ? es : (entrySet = new EntrySet<Entry<String, String>>());
     }
 
-    public int size() {
-        return size;
-    }
-
-    static final class Entry<K, V> extends AbstractEntry<String, String> {
+    private static final class Entry<K, V> extends AbstractEntry<String, String> {
         String key;
-        String value;
         Entry<String, String> left;
         Entry<String, String> right;
         Entry<String, String> parent;
         boolean color = BLACK;
 
         Entry(String key, String value, Entry<String, String> parent) {
+            super(key, value);
             this.key = key;
-            this.value = value;
             this.parent = parent;
         }
 
         @Contract(pure = true)
         public String getKey() {
             return key;
-        }
-
-        @Contract(pure = true)
-        public String getValue() {
-            return value;
-        }
-
-        public String setValue(String value) {
-            String oldValue = this.value;
-            this.value = value;
-            return oldValue;
         }
     }
 }

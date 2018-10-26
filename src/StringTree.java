@@ -32,6 +32,9 @@ abstract class StringTree<K, V> extends AbstractMap<String, String> {
         }
     }
 
-    abstract static class AbstractEntry<K, V> implements Map.Entry<String, String> {
+    abstract static class AbstractEntry<K, V> extends AbstractMap.SimpleEntry<String, String> {
+        AbstractEntry(String key, String value) {
+            super(key, value);
+        }
     }
 }
