@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class RedBlackTree<K, V> extends StringTree<String, String> {
-    private Entry<String, String> root;
     private int size = 0;
+    private Entry<String, String> root;
     private EntrySet<Entry<String, String>> entrySet;
     private static final boolean RED = false;
     private static final boolean BLACK = true;
 
-    public RedBlackTree() {
+    RedBlackTree() {
     }
 
     @Override
@@ -48,14 +48,15 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
     }
 
     @Override
-    public String get(Object key) {
+    public String get(Object object) {
+        String key = object.toString();
         Entry<String, String> p = getEntry(key);
         return (p == null ? null : p.getValue());
     }
 
+    @Contract("null -> fail")
     @Nullable
-    private Entry<String, String> getEntry(@NotNull Object object) {
-        String key = object.toString();
+    private Entry<String, String> getEntry(String key) {
         if (key == null)
             throw new NullPointerException();
         Entry<String, String> p = root;
@@ -71,7 +72,8 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         return null;
     }
 
-    public String remove(Object key) {
+    public String remove(Object object) {
+        String key = object.toString();
         Entry<String, String> p = getEntry(key);
         if (p == null)
             return null;
@@ -248,6 +250,57 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         setColor(x, BLACK);
     }
 
+    void preOrderPrint() {
+        if (root == null) {
+            System.out.println("level=0 child=0 null");
+            return;
+        }
+        String color;
+        int level = 0;
+        int child;
+        Entry<String, String> currentNode = root;
+        Entry<String, String> previousNode = null;
+
+        while (true) {
+            if (previousNode == null || previousNode == parentOf(currentNode)) {
+                color = colorOf(currentNode) ? "BLACK" : "RED";
+                child = (currentNode == leftOf(parentOf(currentNode))) ? 0 : 1;
+                System.out.println("level=" + level + " child=" + child + currentNode.getValue() + "(" + color + ")");
+                previousNode = currentNode;
+                if (leftOf(currentNode) == null) {
+                    System.out.println("level=" + (level + 1) + " child=0 null");
+                    if (rightOf(currentNode) == null) {
+                        System.out.println("level=" + (level + 1) + " child=1 null");
+                        if (parentOf(currentNode) == null) break;
+                        level--;
+                        currentNode = currentNode.parent;
+                    } else {
+                        level++;
+                        currentNode = currentNode.right;
+                    }
+                } else {
+                    level++;
+                    currentNode = currentNode.left;
+                }
+            } else if (previousNode == leftOf(currentNode)) {
+                previousNode = currentNode;
+                if (rightOf(currentNode) == null) {
+                    System.out.println("level=" + (level + 1) + " child=1 null");
+                    level--;
+                    currentNode = currentNode.parent;
+                } else {
+                    level++;
+                    currentNode = currentNode.right;
+                }
+            } else {
+                if (currentNode == root) break;
+                level--;
+                previousNode = currentNode;
+                currentNode = currentNode.parent;
+            }
+        }
+    }
+
     @Contract(pure = true)
     private static boolean colorOf(Entry<String, String> p) {
         return (p == null ? BLACK : p.color);
@@ -317,7 +370,7 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
         return size;
     }
 
-    static final class Entry<K, V> implements Map.Entry<String, String> {
+    static final class Entry<K, V> extends AbstractEntry<String, String> {
         String key;
         String value;
         Entry<String, String> left;
@@ -331,10 +384,12 @@ public class RedBlackTree<K, V> extends StringTree<String, String> {
             this.parent = parent;
         }
 
+        @Contract(pure = true)
         public String getKey() {
             return key;
         }
 
+        @Contract(pure = true)
         public String getValue() {
             return value;
         }

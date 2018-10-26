@@ -3,32 +3,35 @@ import org.jetbrains.annotations.NotNull;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
+import java.util.Map;
 
 abstract class StringTree<K, V> extends AbstractMap<String, String> {
     StringTree() {
     }
 
-    class EntrySet<T> extends AbstractSet<Entry<String, String>> {
+    class EntrySet<T> extends AbstractSet<Map.Entry<String, String>> {
         @NotNull
-        public Iterator<Entry<String, String>> iterator() {
+        public Iterator<Map.Entry<String, String>> iterator() {
             return new EntryIterator();
         }
-
 
         public int size() {
             return StringTree.this.size();
         }
     }
 
-    class EntryIterator implements Iterator<Entry<String, String>> {
+    class EntryIterator implements Iterator<Map.Entry<String, String>> {
         @Override
         public boolean hasNext() {
             return false;
         }
 
         @Override
-        public Entry<String, String> next() {
+        public Map.Entry<String, String> next() {
             return null;
         }
+    }
+
+    abstract static class AbstractEntry<K, V> implements Map.Entry<String, String> {
     }
 }
