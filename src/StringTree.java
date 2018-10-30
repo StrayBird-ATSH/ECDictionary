@@ -4,7 +4,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 
-abstract class StringTree<K, V> extends AbstractMap<String, String> {
+abstract class StringTree extends AbstractMap<String, String> {
     StringTree() {
     }
 
@@ -31,7 +31,7 @@ abstract class StringTree<K, V> extends AbstractMap<String, String> {
         }
     }
 
-    abstract static class AbstractEntry<K, V> extends SimpleEntry<String, String> {
+    abstract static class AbstractEntry extends SimpleEntry<String, String> {
         AbstractEntry(String key, String value) {
             super(key, value);
         }

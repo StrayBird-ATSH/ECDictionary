@@ -3,7 +3,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public class BPlusTreeWC extends StringTree<String, String> {
+public class BPlusTreeWC extends StringTree {
     private Node root;
     private int t = 2;
 
@@ -98,7 +98,7 @@ public class BPlusTreeWC extends StringTree<String, String> {
         Node[] c = new Node[t];
     }
 
-    class BTreeEntry extends AbstractEntry<String, String> {
+    class BTreeEntry extends AbstractEntry {
         String key;
 
         BTreeEntry(String key, String value) {
