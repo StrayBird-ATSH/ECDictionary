@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class BPlusTreeWC extends StringTree {
     private Node root;
-    private int t = 2;
+    private int t = 3;
 
     BPlusTreeWC() {
         super();
@@ -89,6 +89,12 @@ public class BPlusTreeWC extends StringTree {
             }
             BTreeInsertNonFull(x.c[i], k, value);
         }
+    }
+
+    @Override
+    public String remove(Object key) {
+        
+        return "Removed successfully";
     }
 
     @Override

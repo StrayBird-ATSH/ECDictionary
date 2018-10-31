@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class RedBlackTree extends StringTree {
     private RBTreeEntry root;
-    private EntrySet<RBTreeEntry> entrySet;
+    private EntrySet entrySet;
     private static final boolean RED = false;
     private static final boolean BLACK = true;
 
@@ -346,7 +346,7 @@ public class RedBlackTree extends StringTree {
     @NotNull
     public Set<Entry<String, String>> entrySet() {
         EntrySet es = entrySet;
-        return (es != null) ? es : (entrySet = new EntrySet<>());
+        return (es != null) ? es : (entrySet = new EntrySet());
     }
 
     private static final class RBTreeEntry extends AbstractEntry {

@@ -8,7 +8,7 @@ abstract class StringTree extends AbstractMap<String, String> {
     StringTree() {
     }
 
-    class EntrySet<T> extends AbstractSet<Entry<String, String>> {
+    class EntrySet extends AbstractSet<Entry<String, String>> {
         @NotNull
         public Iterator<Entry<String, String>> iterator() {
             return new EntryIterator();
