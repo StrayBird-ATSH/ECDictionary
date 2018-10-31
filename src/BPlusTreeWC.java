@@ -50,13 +50,19 @@ public class BPlusTreeWC extends StringTree {
         Node y = x.c[i];
         z.leaf = y.leaf;
         z.n = t - 1;
-        System.arraycopy(y.entries, t, z.entries, 0, t - 1);
+        for (int j = 0; j < t - 1; j++) {
+            z.entries[j].key = y.entries[j + t].key;
+            z.entries[j].setValue(y.entries[j + t].getValue());
+        }
         if (!y.leaf)
             System.arraycopy(y.c, t, z.c, 0, t);
         y.n = t - 1;
         System.arraycopy(x.c, i + 1, x.c, i + 2, x.n - i);
         x.c[i + 1] = z;
-        System.arraycopy(x.entries, i, x.entries, i + 1, x.n - i);
+        for (int j = x.n - 1; j >= i; j--) {
+            x.entries[j + 1].key = x.entries[j].key;
+            x.entries[j + 1].setValue(x.entries[j].getValue());
+        }
         x.entries[i].key = y.entries[t - 1].key;
         x.entries[i].setValue(y.entries[t - 1].getValue());
         x.n++;
@@ -66,7 +72,8 @@ public class BPlusTreeWC extends StringTree {
         int i = x.n;
         if (x.leaf) {
             while (i > 0 && k.compareTo(x.entries[i - 1].key) < 0) {
-                x.entries[i] = x.entries[i - 1];
+                x.entries[i].key = x.entries[i - 1].key;
+                x.entries[i].setValue(x.entries[i - 1].getValue());
                 i--;
             }
             x.entries[i].key = k;
@@ -89,7 +96,6 @@ public class BPlusTreeWC extends StringTree {
 
         return "Removed successfully";
     }
-
 
     @Override
     public Set<Entry<String, String>> entrySet() {
