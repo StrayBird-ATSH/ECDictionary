@@ -35,11 +35,11 @@ public class BPlusTreeWC extends StringTree {
         String previousValue = get(key);
         Node r = this.root;
         if (root.n == 2 * t - 1) {
-            this.root = new Node();
+            root = new Node();
             root.leaf = false;
             root.n = 0;
             root.c[0] = r;
-            BTreeSplitChild(root, 1);
+            BTreeSplitChild(root, 0);
             BTreeInsertNonFull(this.root, key, value);
         } else BTreeInsertNonFull(r, key, value);
         return previousValue;
@@ -47,19 +47,19 @@ public class BPlusTreeWC extends StringTree {
 
     private void BTreeSplitChild(@NotNull Node x, int i) {
         Node z = new Node();
-        Node y = x.c[i-1];
+        Node y = x.c[i];
         z.leaf = y.leaf;
         z.n = t - 1;
         for (int j = 0; j < t - 1; j++)
             z.entries[j].key = y.entries[j + t].key;
         if (!y.leaf)
-            System.arraycopy(y.c, t, z.c, 0, t-1);
+            System.arraycopy(y.c, t, z.c, 0, t);
         y.n = t - 1;
-        System.arraycopy(x.c, i, x.c, i + 1, x.n - i + 1);
-        x.c[i] = z;
-        for (int j = x.n-1; j >= i-1; j--)
+        System.arraycopy(x.c, i + 1, x.c, i + 2, x.n - i);
+        x.c[i + 1] = z;
+        for (int j = x.n - 1; j >= i; j--)
             x.entries[j + 1].key = x.entries[j].key;
-        x.entries[i-1].key = y.entries[t-1].key;
+        x.entries[i].key = y.entries[t - 1].key;
         x.n++;
     }
 
@@ -76,7 +76,7 @@ public class BPlusTreeWC extends StringTree {
             x.n++;
         } else {
             while (i > 0 && k.compareTo(x.entries[i - 1].key) < 0)
-                i++;
+                i--;
             if (x.c[i].n == 2 * t - 1) {
                 BTreeSplitChild(x, i);
                 if (k.compareTo(x.entries[i].key) > 0)

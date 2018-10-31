@@ -13,6 +13,29 @@ public class Main {
         bPlusTreeWC.put("5", "一");
         bPlusTreeWC.put("1", "三");
         bPlusTreeWC.put("6", "一");
+
+        bPlusTreeWC.put("22", "一");
+        bPlusTreeWC.put("31", "二");
+        bPlusTreeWC.put("51", "一");
+        bPlusTreeWC.put("11", "三");
+        bPlusTreeWC.put("61", "一");
+        bPlusTreeWC.put("71", "一");
+        bPlusTreeWC.put("32", "二");
+        bPlusTreeWC.put("52", "一");
+        bPlusTreeWC.put("12", "三");
+        bPlusTreeWC.put("62", "一");
+        bPlusTreeWC.put("72", "一");
+        bPlusTreeWC.put("33", "二");
+        bPlusTreeWC.put("53", "一");
+        bPlusTreeWC.put("13", "三");
+        bPlusTreeWC.put("63", "一");
+        bPlusTreeWC.put("73", "一");
+        bPlusTreeWC.put("34", "二");
+        bPlusTreeWC.put("54", "一");
+        bPlusTreeWC.put("14", "三");
+        bPlusTreeWC.put("64", "一");
+
+
         System.out.println(bPlusTreeWC.get("7"));
         System.out.println(bPlusTreeWC.get("3"));
         System.out.println(bPlusTreeWC.get("5"));
