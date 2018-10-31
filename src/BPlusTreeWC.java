@@ -50,16 +50,21 @@ public class BPlusTreeWC extends StringTree {
         Node y = x.c[i];
         z.leaf = y.leaf;
         z.n = t - 1;
-        for (int j = 0; j < t - 1; j++)
+        for (int j = 0; j < t - 1; j++) {
             z.entries[j].key = y.entries[j + t].key;
+            z.entries[j].setValue(y.entries[j + t].getValue());
+        }
         if (!y.leaf)
             System.arraycopy(y.c, t, z.c, 0, t);
         y.n = t - 1;
         System.arraycopy(x.c, i + 1, x.c, i + 2, x.n - i);
         x.c[i + 1] = z;
-        for (int j = x.n - 1; j >= i; j--)
+        for (int j = x.n - 1; j >= i; j--) {
             x.entries[j + 1].key = x.entries[j].key;
+            x.entries[j + 1].setValue(x.entries[j].getValue());
+        }
         x.entries[i].key = y.entries[t - 1].key;
+        x.entries[i].setValue(y.entries[t - 1].getValue());
         x.n++;
     }
 
