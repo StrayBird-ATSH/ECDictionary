@@ -32,14 +32,14 @@ public class Main {
         bPlusTreeWC.put("73", "啦啦啦");
         bPlusTreeWC.put("34", "二");
         bPlusTreeWC.put("54", "一");
-        bPlusTreeWC.put("14", "三");
+        bPlusTreeWC.put("14", "lalalala");
         bPlusTreeWC.put("64", "一");
 
 
         System.out.println(bPlusTreeWC.get("7"));
         System.out.println(bPlusTreeWC.get("3"));
         System.out.println(bPlusTreeWC.get("73"));
-        System.out.println(bPlusTreeWC.get("1"));
+        System.out.println(bPlusTreeWC.get("14"));
         System.out.println(bPlusTreeWC.get("6"));
     }
 }
