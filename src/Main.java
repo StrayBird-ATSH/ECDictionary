@@ -41,5 +41,6 @@ public class Main {
         System.out.println(bPlusTreeWC.get("73"));
         System.out.println(bPlusTreeWC.get("14"));
         System.out.println(bPlusTreeWC.get("6"));
+        System.out.println(bPlusTreeWC.get("6"));
     }
 }
