@@ -52,7 +52,7 @@ public class RedBlackTree extends StringTree {
 
     @Contract("null -> fail")
     @Nullable
-    private RedBlackTree.RBTreeEntry getEntry(String key) {
+    private RBTreeEntry getEntry(String key) {
         if (key == null)
             throw new NullPointerException();
         RBTreeEntry p = root;

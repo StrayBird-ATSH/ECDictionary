@@ -1,7 +1,7 @@
 import java.util.AbstractMap;
 import java.util.Set;
 
-public class BPlusTree<K, V> extends AbstractMap<String, String> {
+public class BPlusTree extends AbstractMap<String, String> {
     private Node root;
     private int order;
 
