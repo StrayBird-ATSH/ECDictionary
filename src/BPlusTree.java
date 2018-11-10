@@ -61,25 +61,18 @@ public class BPlusTree extends StringTree {
 
         String get(String key) {
             if (isLeaf) {
-                for (SimpleEntry<String, String> entry : entries) {
-                    if (entry.getKey().compareTo(key) == 0) {
+                for (SimpleEntry<String, String> entry : entries)
+                    if (entry.getKey().compareTo(key) == 0)
                         return entry.getValue();
-                    }
-                }
                 return null;
-            } else {
-                if (key.compareTo(entries.get(0).getKey()) <= 0) {
-                    return children.get(0).get(key);
-                } else if (key.compareTo(entries.get(entries.size() - 1).getKey()) >= 0) {
-                    return children.get(children.size() - 1).get(key);
-                } else {
-                    for (int i = 0; i < entries.size(); i++) {
-                        if (entries.get(i).getKey().compareTo(key) <= 0 && entries.get(i + 1).getKey().compareTo(key) > 0) {
-                            return children.get(i).get(key);
-                        }
-                    }
-                }
-            }
+            } else if (key.compareTo(entries.get(0).getKey()) <= 0)
+                return children.get(0).get(key);
+            else if (key.compareTo(entries.get(entries.size() - 1).getKey()) >= 0)
+                return children.get(children.size() - 1).get(key);
+            else
+                for (int i = 0; i < entries.size(); i++)
+                    if (entries.get(i).getKey().compareTo(key) <= 0 && entries.get(i + 1).getKey().compareTo(key) > 0)
+                        return children.get(i).get(key);
             return null;
         }
 
