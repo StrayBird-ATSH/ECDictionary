@@ -9,7 +9,7 @@ public class Node {
     private Node parent;
     private Node previous;
     private Node next;
-    private List<Entry<Comparable, Object>> entries;
+    private List<Entry<Comparable, String>> entries;
     private List<Node> children;
 
     private Node(boolean isLeaf) {
@@ -25,9 +25,9 @@ public class Node {
         this.isRoot = isRoot;
     }
 
-    Object get(Comparable key) {
+    String get(Comparable key) {
         if (isLeaf) {
-            for (Entry<Comparable, Object> entry : entries) {
+            for (Entry<Comparable, String> entry : entries) {
                 if (entry.getKey().compareTo(key) == 0) {
                     return entry.getValue();
                 }
@@ -49,9 +49,9 @@ public class Node {
         return null;
     }
 
-    void insertOrUpdate(Comparable key, Object obj, BPlusTree tree) {
+    void insertOrUpdate(Comparable key, String obj, BPlusTree tree) {
         if (isLeaf) {
-            if (contains(key) || entries.size() < tree.getOrder()) {
+            if (contains(key) || entries.size() < (2*tree.getMinDegree()-1)) {
                 insertOrUpdate(key, obj);
                 if (parent != null) {
                     parent.updateInsert(tree);
@@ -71,8 +71,8 @@ public class Node {
                 right.setPrevious(left);
                 previous = null;
                 next = null;
-                int leftSize = (tree.getOrder() + 1) / 2 + (tree.getOrder() + 1) % 2;
-                int rightSize = (tree.getOrder() + 1) / 2;
+                int leftSize = ((2*tree.getMinDegree()-1) + 1) / 2 + ((2*tree.getMinDegree()-1) + 1) % 2;
+                int rightSize = ((2*tree.getMinDegree()-1) + 1) / 2;
                 insertOrUpdate(key, obj);
                 for (int i = 0; i < leftSize; i++)
                     left.getEntries().add(entries.get(i));
@@ -121,11 +121,11 @@ public class Node {
 
     private void updateInsert(BPlusTree tree) {
         validate(this, tree);
-        if (children.size() > tree.getOrder()) {
+        if (children.size() > (2*tree.getMinDegree()-1)) {
             Node left = new Node(false);
             Node right = new Node(false);
-            int leftSize = (tree.getOrder() + 1) / 2 + (tree.getOrder() + 1) % 2;
-            int rightSize = (tree.getOrder() + 1) / 2;
+            int leftSize = ((2*tree.getMinDegree()-1) + 1) / 2 + ((2*tree.getMinDegree()-1) + 1) % 2;
+            int rightSize = ((2*tree.getMinDegree()-1) + 1) / 2;
             for (int i = 0; i < leftSize; i++) {
                 left.getChildren().add(children.get(i));
                 left.getEntries().add(new SimpleEntry(children.get(i).getEntries().get(0).getKey(), null));
@@ -176,8 +176,8 @@ public class Node {
                 }
             }
         } else if (node.isRoot() && node.getChildren().size() >= 2
-                || node.getChildren().size() >= tree.getOrder() / 2
-                && node.getChildren().size() <= tree.getOrder()
+                || node.getChildren().size() >= (2*tree.getMinDegree()-1) / 2
+                && node.getChildren().size() <= (2*tree.getMinDegree()-1)
                 && node.getChildren().size() >= 2) {
             node.getEntries().clear();
             for (int i = 0; i < node.getChildren().size(); i++) {
@@ -193,7 +193,7 @@ public class Node {
 
     private void updateRemove(BPlusTree tree) {
         validate(this, tree);
-        if (children.size() < tree.getOrder() / 2 || children.size() < 2) {
+        if (children.size() < (2*tree.getMinDegree()-1) / 2 || children.size() < 2) {
             if (isRoot) {
                 if (children.size() < 2) {
                     Node root = children.get(0);
@@ -215,7 +215,7 @@ public class Node {
                     next = parent.getChildren().get(nextIdx);
                 }
                 if (previous != null
-                        && previous.getChildren().size() > tree.getOrder() / 2
+                        && previous.getChildren().size() > (2*tree.getMinDegree()-1) / 2
                         && previous.getChildren().size() > 2) {
                     int idx = previous.getChildren().size() - 1;
                     Node borrow = previous.getChildren().get(idx);
@@ -226,7 +226,7 @@ public class Node {
                     validate(this, tree);
                     parent.updateRemove(tree);
                 } else if (next != null
-                        && next.getChildren().size() > tree.getOrder() / 2
+                        && next.getChildren().size() > (2*tree.getMinDegree()-1) / 2
                         && next.getChildren().size() > 2) {
                     Node borrow = next.getChildren().get(0);
                     next.getChildren().remove(0);
@@ -237,7 +237,7 @@ public class Node {
                     parent.updateRemove(tree);
                 } else {
                     if (previous != null
-                            && (previous.getChildren().size() <= tree.getOrder() / 2 || previous.getChildren().size() <= 2)) {
+                            && (previous.getChildren().size() <= (2*tree.getMinDegree()-1) / 2 || previous.getChildren().size() <= 2)) {
 
                         for (int i = previous.getChildren().size() - 1; i >= 0; i--) {
                             Node child = previous.getChildren().get(i);
@@ -251,7 +251,7 @@ public class Node {
                         validate(this, tree);
                         parent.updateRemove(tree);
                     } else if (next != null
-                            && (next.getChildren().size() <= tree.getOrder() / 2 || next.getChildren().size() <= 2)) {
+                            && (next.getChildren().size() <= (2*tree.getMinDegree()-1) / 2 || next.getChildren().size() <= 2)) {
 
                         for (int i = 0; i < next.getChildren().size(); i++) {
                             Node child = next.getChildren().get(i);
@@ -277,29 +277,29 @@ public class Node {
             if (isRoot)
                 remove(key);
              else {
-                if (entries.size() > tree.getOrder() / 2 && entries.size() > 2) {
+                if (entries.size() > (2*tree.getMinDegree()-1) / 2 && entries.size() > 2) {
                     remove(key);
                 } else {
                     if (previous != null
-                            && previous.getEntries().size() > tree.getOrder() / 2
+                            && previous.getEntries().size() > (2*tree.getMinDegree()-1) / 2
                             && previous.getEntries().size() > 2
                             && previous.getParent() == parent) {
                         int size = previous.getEntries().size();
-                        Entry<Comparable, Object> entry = previous.getEntries().get(size - 1);
+                        Entry<Comparable, String> entry = previous.getEntries().get(size - 1);
                         previous.getEntries().remove(entry);
                         entries.add(0, entry);
                         remove(key);
                     } else if (next != null
-                            && next.getEntries().size() > tree.getOrder() / 2
+                            && next.getEntries().size() > (2*tree.getMinDegree()-1) / 2
                             && next.getEntries().size() > 2
                             && next.getParent() == parent) {
-                        Entry<Comparable, Object> entry = next.getEntries().get(0);
+                        Entry<Comparable, String> entry = next.getEntries().get(0);
                         next.getEntries().remove(entry);
                         entries.add(entry);
                         remove(key);
                     } else {
                         if (previous != null
-                                && (previous.getEntries().size() <= tree.getOrder() / 2 || previous.getEntries().size() <= 2)
+                                && (previous.getEntries().size() <= (2*tree.getMinDegree()-1) / 2 || previous.getEntries().size() <= 2)
                                 && previous.getParent() == parent) {
                             for (int i = previous.getEntries().size() - 1; i >= 0; i--) {
                                 entries.add(0, previous.getEntries().get(i));
@@ -319,7 +319,7 @@ public class Node {
                                 previous = null;
                             }
                         } else if (next != null
-                                && (next.getEntries().size() <= tree.getOrder() / 2 || next.getEntries().size() <= 2)
+                                && (next.getEntries().size() <= (2*tree.getMinDegree()-1) / 2 || next.getEntries().size() <= 2)
                                 && next.getParent() == parent) {
                             for (int i = 0; i < next.getEntries().size(); i++) {
                                 entries.add(next.getEntries().get(i));
@@ -361,7 +361,7 @@ public class Node {
 
 
     private boolean contains(Comparable key) {
-        for (Entry<Comparable, Object> entry : entries) {
+        for (Entry<Comparable, String> entry : entries) {
             if (entry.getKey().compareTo(key) == 0) {
                 return true;
             }
@@ -370,8 +370,8 @@ public class Node {
     }
 
 
-    private void insertOrUpdate(Comparable key, Object obj) {
-        Entry<Comparable, Object> entry = new SimpleEntry<>(key, obj);
+    private void insertOrUpdate(Comparable key, String obj) {
+        Entry<Comparable, String> entry = new SimpleEntry<Comparable, String>(key, obj);
         if (entries.size() == 0) {
             entries.add(entry);
             return;
@@ -430,11 +430,11 @@ public class Node {
         this.parent = parent;
     }
 
-    private List<Entry<Comparable, Object>> getEntries() {
+    private List<Entry<Comparable, String>> getEntries() {
         return entries;
     }
 
-    private void setEntries(List<Entry<Comparable, Object>> entries) {
+    private void setEntries(List<Entry<Comparable, String>> entries) {
         this.entries = entries;
     }
 

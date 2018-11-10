@@ -30,6 +30,17 @@ public class BPlusTreeWC extends StringTree {
         else return BTreeSearch(x.c[i], key);
     }
 
+    private Node BTreeGetNode(@NotNull Node x, String key) {
+        int i = 0;
+        while (i < x.n && key.compareTo(x.entries[i].getKey()) > 0)
+            i++;
+        if (i < x.n && key.equals(x.entries[i].getKey()))
+            return x;
+        else if (x.leaf)
+            return x;
+        else return BTreeGetNode(x.c[i], key);
+    }
+
     @Override
     public String put(String key, String value) {
         String previousValue = get(key);
@@ -90,6 +101,30 @@ public class BPlusTreeWC extends StringTree {
     public String remove(Object key) {
 
         return "Removed successfully";
+    }
+
+    String successor(String key) {
+        Node node = BTreeGetNode(root, key);
+        if (node.leaf) return "This is a leaf node.";
+        int i = 0;
+        while (i < node.n && key.compareTo(node.entries[i].getKey()) > 0)
+            i++;
+        node = node.c[i + 1];
+        while (!node.leaf)
+            node = node.c[0];
+        return node.entries[0].getValue();
+    }
+
+    String predecessor(String key) {
+        Node node = BTreeGetNode(root, key);
+        if (node.leaf) return "This is a leaf node.";
+        int i = 0;
+        while (i < node.n && key.compareTo(node.entries[i].getKey()) > 0)
+            i++;
+        node = node.c[i];
+        while (!node.leaf)
+            node = node.c[node.n];
+        return node.entries[node.n].getValue();
     }
 
     @Override
