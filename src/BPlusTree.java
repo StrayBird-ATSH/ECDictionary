@@ -428,6 +428,7 @@ public class BPlusTree extends StringTree {
             tree.remove(Integer.toString(j));
         for (int i = 0; i < 130; i += 6)
             System.out.println(tree.get(Integer.toString(i)));
+        tree.preOrderPrint(0, tree.root);
         BPlusTree tree1 = new BPlusTree(2);
         tree1.put("7", "7");
         tree1.put("3", "3");
