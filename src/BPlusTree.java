@@ -189,6 +189,7 @@ public class BPlusTree extends StringTree {
                         if (!node.isRoot) {
                             validate(node.parent, tree);
                         }
+                        i--;
                     }
                 }
             } else if (node.isRoot && node.children.size() >= 2
@@ -341,9 +342,7 @@ public class BPlusTree extends StringTree {
                                     && (next.entries.size() <= (2 * tree.minDegree - 1) / 2
                                     || next.entries.size() <= 2)
                                     && next.parent == parent) {
-                                for (int i = 0; i < next.entries.size(); i++) {
-                                    entries.add(next.entries.get(i));
-                                }
+                                entries.addAll(next.entries);
                                 remove(key);
                                 next.parent = null;
                                 next.entries = null;
@@ -450,7 +449,7 @@ public class BPlusTree extends StringTree {
             tree.put(Integer.toString(i), Integer.toString(i));
         for (int j = 20; j < 30; j++)
             tree.remove(Integer.toString(j));
-        for (int i = 0; i < 130; i += 7)
+        for (int i = 0; i < 130; i += 6)
             System.out.println(tree.get(Integer.toString(i)));
     }
 }
