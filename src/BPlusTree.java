@@ -23,7 +23,7 @@ public class BPlusTree extends StringTree {
 
     @Override
     public String put(String key, String value) {
-        root.insertOrUpdate(key, value, this);
+        root.putElement(key, value, this);
         return "Key = " + key + ", Value = " + value + " has been put into the tree";
     }
 
@@ -75,12 +75,12 @@ public class BPlusTree extends StringTree {
             return null;
         }
 
-        void insertOrUpdate(String key, String obj, BPlusTree tree) {
+        void putElement(String key, String obj, BPlusTree tree) {
             if (isLeaf)
                 if (contains(key) || entries.size() < (2 * tree.minDegree - 1)) {
-                    insertElement(key, obj);
+                    insertEntry(key, obj);
                     if (parent != null)
-                        parent.updateInsert();
+                        parent.fixAfterInsert();
                 } else {
                     Node left = new Node(true);
                     Node right = new Node(true);
@@ -98,7 +98,7 @@ public class BPlusTree extends StringTree {
                     next = null;
                     int leftSize = tree.minDegree + (2 * tree.minDegree) % 2;
                     int rightSize = tree.minDegree;
-                    insertElement(key, obj);
+                    insertEntry(key, obj);
                     for (int i = 0; i < leftSize; i++)
                         left.entries.add(entries.get(i));
                     for (int i = 0; i < rightSize; i++)
@@ -109,11 +109,11 @@ public class BPlusTree extends StringTree {
                 int i = 0;
                 while (i < entries.size() && key.compareTo(entries.get(i).getKey()) > 0)
                     i++;
-                children.get(i - 1).insertOrUpdate(key, obj, tree);
+                children.get(i - 1).putElement(key, obj, tree);
             }
         }
 
-        private void insertElement(String key, String obj) {
+        private void insertEntry(String key, String obj) {
             SimpleEntry<String, String> entry = new SimpleEntry<>(key, obj);
             if (entries.size() == 0) {
                 entries.add(entry);
@@ -144,7 +144,7 @@ public class BPlusTree extends StringTree {
                 parent.children.add(index + 1, right);
                 this.entries = null;
                 this.children = null;
-                parent.updateInsert();
+                parent.fixAfterInsert();
                 this.parent = null;
             } else {
                 isRoot = false;
@@ -156,11 +156,11 @@ public class BPlusTree extends StringTree {
                 parent.children.add(right);
                 this.entries = null;
                 this.children = null;
-                parent.updateInsert();
+                parent.fixAfterInsert();
             }
         }
 
-        private void updateInsert() {
+        private void fixAfterInsert() {
             validate(this);
             if (children.size() > (2 * minDegree - 1)) {
                 Node left = new Node(false);
@@ -180,7 +180,6 @@ public class BPlusTree extends StringTree {
                 splitNode(left, right);
             }
         }
-
 
         private void validate(@NotNull Node node) {
             if (node.entries.size() == node.children.size())
@@ -208,8 +207,7 @@ public class BPlusTree extends StringTree {
             }
         }
 
-
-        private void updateRemove(BPlusTree tree) {
+        private void updateRemove(@NotNull BPlusTree tree) {
             validate(this);
             if (children.size() < (2 * tree.minDegree - 1) / 2 || children.size() < 2) {
                 if (isRoot) {
