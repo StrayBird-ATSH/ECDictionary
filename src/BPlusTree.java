@@ -113,14 +113,14 @@ public class BPlusTree extends StringTree {
                     for (int i = 0; i < rightSize; i++)
                         right.entries.add(entries.get(leftSize + i));
                     if (parent != null) {
-                        int index = parent.getChildren().indexOf(this);
-                        parent.getChildren().remove(this);
+                        int index = parent.children.indexOf(this);
+                        parent.children.remove(this);
                         left.parent = parent;
                         right.parent = parent;
-                        parent.getChildren().add(index, left);
-                        parent.getChildren().add(index + 1, right);
+                        parent.children.add(index, left);
+                        parent.children.add(index + 1, right);
                         this.entries = null;
-                        setChildrenNull();
+                        this.children = null;
                         parent.updateInsert(tree);
                         this.parent = null;
                     } else {
@@ -129,10 +129,10 @@ public class BPlusTree extends StringTree {
                         tree.root = parent;
                         left.parent = parent;
                         right.parent = parent;
-                        parent.getChildren().add(left);
-                        parent.getChildren().add(right);
+                        parent.children.add(left);
+                        parent.children.add(right);
                         this.entries = null;
-                        setChildrenNull();
+                        this.children = null;
                         parent.updateInsert(tree);
                     }
                 }
@@ -161,24 +161,24 @@ public class BPlusTree extends StringTree {
                 int leftSize = tree.minDegree + (2 * tree.minDegree) % 2;
                 int rightSize = tree.minDegree;
                 for (int i = 0; i < leftSize; i++) {
-                    left.getChildren().add(children.get(i));
+                    left.children.add(children.get(i));
                     left.entries.add(new SimpleEntry<>(children.get(i).entries.get(0).getKey(), null));
                     children.get(i).parent = left;
                 }
                 for (int i = 0; i < rightSize; i++) {
-                    right.getChildren().add(children.get(leftSize + i));
+                    right.children.add(children.get(leftSize + i));
                     right.entries.add(new SimpleEntry<>(children.get(leftSize + i).entries.get(0).getKey(), null));
                     children.get(leftSize + i).parent = right;
                 }
                 if (parent != null) {
-                    int index = parent.getChildren().indexOf(this);
-                    parent.getChildren().remove(this);
+                    int index = parent.children.indexOf(this);
+                    parent.children.remove(this);
                     left.parent = parent;
                     right.parent = parent;
-                    parent.getChildren().add(index, left);
-                    parent.getChildren().add(index + 1, right);
+                    parent.children.add(index, left);
+                    parent.children.add(index + 1, right);
                     this.entries = null;
-                    setChildrenNull();
+                    this.children = null;
                     parent.updateInsert(tree);
                     this.parent = null;
                 } else {
@@ -187,10 +187,10 @@ public class BPlusTree extends StringTree {
                     tree.root = parent;
                     left.parent = parent;
                     right.parent = parent;
-                    parent.getChildren().add(left);
-                    parent.getChildren().add(right);
+                    parent.children.add(left);
+                    parent.children.add(right);
                     this.entries = null;
-                    setChildrenNull();
+                    this.children = null;
                     parent.updateInsert(tree);
                 }
             }
@@ -198,26 +198,26 @@ public class BPlusTree extends StringTree {
 
 
         private void validate(@NotNull Node node, BPlusTree tree) {
-            if (node.entries.size() == node.getChildren().size()) {
+            if (node.entries.size() == node.children.size()) {
                 for (int i = 0; i < node.entries.size(); i++) {
-                    String key = node.getChildren().get(i).entries.get(0).getKey();
+                    String key = node.children.get(i).entries.get(0).getKey();
                     if (node.entries.get(i).getKey().compareTo(key) != 0) {
                         node.entries.remove(i);
                         node.entries.add(i, new SimpleEntry<>(key, null));
-                        if (!node.isRoot()) {
+                        if (!node.isRoot) {
                             validate(node.parent, tree);
                         }
                     }
                 }
-            } else if (node.isRoot() && node.getChildren().size() >= 2
-                    || node.getChildren().size() >= (2 * tree.minDegree - 1) / 2
-                    && node.getChildren().size() <= (2 * tree.minDegree - 1)
-                    && node.getChildren().size() >= 2) {
+            } else if (node.isRoot && node.children.size() >= 2
+                    || node.children.size() >= (2 * tree.minDegree - 1) / 2
+                    && node.children.size() <= (2 * tree.minDegree - 1)
+                    && node.children.size() >= 2) {
                 node.entries.clear();
-                for (int i = 0; i < node.getChildren().size(); i++) {
-                    String key = node.getChildren().get(i).entries.get(0).getKey();
+                for (int i = 0; i < node.children.size(); i++) {
+                    String key = node.children.get(i).entries.get(0).getKey();
                     node.entries.add(new SimpleEntry<>(key, null));
-                    if (!node.isRoot()) {
+                    if (!node.isRoot) {
                         validate(node.parent, tree);
                     }
                 }
@@ -233,37 +233,37 @@ public class BPlusTree extends StringTree {
                         Node root = children.get(0);
                         tree.root = root;
                         root.parent = null;
-                        root.setRoot();
+                        root.isRoot = true;
                         this.entries = null;
-                        setChildrenNull();
+                        this.children = null;
                     }
                 } else {
-                    int currIdx = parent.getChildren().indexOf(this);
+                    int currIdx = parent.children.indexOf(this);
                     int prevIdx = currIdx - 1;
                     int nextIdx = currIdx + 1;
                     Node previous = null, next = null;
                     if (prevIdx >= 0) {
-                        previous = parent.getChildren().get(prevIdx);
+                        previous = parent.children.get(prevIdx);
                     }
-                    if (nextIdx < parent.getChildren().size()) {
-                        next = parent.getChildren().get(nextIdx);
+                    if (nextIdx < parent.children.size()) {
+                        next = parent.children.get(nextIdx);
                     }
                     if (previous != null
-                            && previous.getChildren().size() > (2 * tree.minDegree - 1) / 2
-                            && previous.getChildren().size() > 2) {
-                        int idx = previous.getChildren().size() - 1;
-                        Node borrow = previous.getChildren().get(idx);
-                        previous.getChildren().remove(idx);
+                            && previous.children.size() > (2 * tree.minDegree - 1) / 2
+                            && previous.children.size() > 2) {
+                        int idx = previous.children.size() - 1;
+                        Node borrow = previous.children.get(idx);
+                        previous.children.remove(idx);
                         borrow.parent = this;
                         children.add(0, borrow);
                         validate(previous, tree);
                         validate(this, tree);
                         parent.updateRemove(tree);
                     } else if (next != null
-                            && next.getChildren().size() > (2 * tree.minDegree - 1) / 2
-                            && next.getChildren().size() > 2) {
-                        Node borrow = next.getChildren().get(0);
-                        next.getChildren().remove(0);
+                            && next.children.size() > (2 * tree.minDegree - 1) / 2
+                            && next.children.size() > 2) {
+                        Node borrow = next.children.get(0);
+                        next.children.remove(0);
                         borrow.parent = this;
                         children.add(borrow);
                         validate(next, tree);
@@ -271,33 +271,33 @@ public class BPlusTree extends StringTree {
                         parent.updateRemove(tree);
                     } else {
                         if (previous != null
-                                && (previous.getChildren().size() <= (2 * tree.minDegree - 1) / 2 ||
-                                previous.getChildren().size() <= 2)) {
+                                && (previous.children.size() <= (2 * tree.minDegree - 1) / 2 ||
+                                previous.children.size() <= 2)) {
 
-                            for (int i = previous.getChildren().size() - 1; i >= 0; i--) {
-                                Node child = previous.getChildren().get(i);
+                            for (int i = previous.children.size() - 1; i >= 0; i--) {
+                                Node child = previous.children.get(i);
                                 children.add(0, child);
                                 child.parent = this;
                             }
-                            previous.setChildrenNull();
+                            previous.children = null;
                             previous.entries = null;
                             previous.parent = null;
-                            parent.getChildren().remove(previous);
+                            parent.children.remove(previous);
                             validate(this, tree);
                             parent.updateRemove(tree);
                         } else if (next != null
-                                && (next.getChildren().size() <= (2 * tree.minDegree - 1) / 2 ||
-                                next.getChildren().size() <= 2)) {
+                                && (next.children.size() <= (2 * tree.minDegree - 1) / 2 ||
+                                next.children.size() <= 2)) {
 
-                            for (int i = 0; i < next.getChildren().size(); i++) {
-                                Node child = next.getChildren().get(i);
+                            for (int i = 0; i < next.children.size(); i++) {
+                                Node child = next.children.get(i);
                                 children.add(child);
                                 child.parent = this;
                             }
-                            next.setChildrenNull();
+                            next.children = null;
                             next.entries = null;
                             next.parent = null;
-                            parent.getChildren().remove(next);
+                            parent.children.remove(next);
                             validate(this, tree);
                             parent.updateRemove(tree);
                         }
@@ -344,7 +344,7 @@ public class BPlusTree extends StringTree {
                                 remove(key);
                                 previous.parent = null;
                                 previous.entries = null;
-                                parent.getChildren().remove(previous);
+                                parent.children.remove(previous);
                                 if (previous.previous != null) {
                                     Node temp = previous;
                                     temp.previous.next = this;
@@ -365,7 +365,7 @@ public class BPlusTree extends StringTree {
                                 remove(key);
                                 next.parent = null;
                                 next.entries = null;
-                                parent.getChildren().remove(next);
+                                parent.children.remove(next);
                                 if (next.next != null) {
                                     Node temp = next;
                                     temp.next.previous = this;
@@ -442,22 +442,6 @@ public class BPlusTree extends StringTree {
             if (index != -1) {
                 entries.remove(index);
             }
-        }
-
-        private ArrayList<Node> getChildren() {
-            return children;
-        }
-
-        private void setChildrenNull() {
-            this.children = null;
-        }
-
-        private boolean isRoot() {
-            return isRoot;
-        }
-
-        private void setRoot() {
-            this.isRoot = true;
         }
 
         public String toString() {
