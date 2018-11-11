@@ -23,7 +23,7 @@ public class Launcher extends Application {
     @Override
     public void start(Stage primaryStage) {
         RedBlackTree redBlackTree = new RedBlackTree();
-        BPlusTree bPlusTree = new BPlusTree(3);
+        BPlusTree bPlusTree = new BPlusTree(2);
         HBox[] leftHBoxes = new HBox[3];
         for (int i = 0; i < 3; i++)
             leftHBoxes[i] = new HBox(10);
@@ -138,8 +138,7 @@ public class Launcher extends Application {
             if (rbRedBlack.isSelected())
                 resultString = redBlackTree.get(key);
             else resultString = bPlusTree.get(key);
-            System.out.println(resultString);
-            redBlackTree.preOrderPrint();
+            bPlusTree.preOrderPrint(0, bPlusTree.root);
             result.setText(resultString);
         });
 
@@ -148,10 +147,16 @@ public class Launcher extends Application {
                 redBlackTree.put(addEnglish.getText(), addChinese.getText());
             else bPlusTree.put(addEnglish.getText(), addChinese.getText());
         });
+
         buttonDelete.setOnAction(event -> {
             if (rbRedBlack.isSelected())
                 redBlackTree.remove(addEnglish.getText());
             else bPlusTree.remove(addEnglish.getText());
+        });
+
+        btSubmit.setOnAction(event -> {
+            if (rbRedBlack.isSelected())
+                redBlackTree.searchScope(tfSearch1.getText(), tfSearch2.getText(), redBlackTree.getRoot());
         });
 
         // Create a scene and place it in the stage

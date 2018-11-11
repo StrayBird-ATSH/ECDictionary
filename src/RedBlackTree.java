@@ -13,6 +13,10 @@ public class RedBlackTree extends StringTree {
     RedBlackTree() {
     }
 
+    RBTreeEntry getRoot() {
+        return root;
+    }
+
     @Override
     public String put(String key, String value) {
         RBTreeEntry t = root;
@@ -48,6 +52,21 @@ public class RedBlackTree extends StringTree {
         String key = object.toString();
         RBTreeEntry p = getEntry(key);
         return (p == null ? null : p.getValue());
+    }
+
+    /**
+     * Inorder traversal from the root
+     *
+     * @param lowerBound the left limit of the Search
+     * @param upperBound the right limit of the Search
+     * @param node       the currently searching node, recursively change in each iteration
+     */
+    void searchScope(String lowerBound, String upperBound, RBTreeEntry node) {
+        if (node == null) return;
+        searchScope(lowerBound, upperBound, node.left);
+        if (node.getKey().compareTo(lowerBound) >= 0 && node.getKey().compareTo(upperBound) <= 0)
+            System.out.println(node.getKey() + " " + node.getValue());
+        searchScope(lowerBound, upperBound, node.right);
     }
 
     @Contract("null -> fail")

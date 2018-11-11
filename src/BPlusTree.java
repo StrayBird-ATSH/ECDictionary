@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class BPlusTree extends StringTree {
-    private Node root;
+    Node root;
     private int minDegree;
 
     BPlusTree(int minDegree) {
@@ -14,6 +14,7 @@ public class BPlusTree extends StringTree {
         }
         this.minDegree = minDegree;
         root = new Node(true, true);
+        ArrayList<String> leafNode = new ArrayList<>();
     }
 
     @Override
@@ -33,14 +34,14 @@ public class BPlusTree extends StringTree {
         return "Entry key = " + key + " has been removed";
     }
 
-    private void preOrderPrint(int level, @NotNull Node node) {
+    void preOrderPrint(int level, @NotNull Node node) {
         int child = 0;
         if (!node.isRoot)
             for (Node parentChild : node.parent.children)
                 if (parentChild != node) child++;
                 else break;
         System.out.print("level=" + level + " child=" + child + " /");
-        int i = node.isLeaf ? 0 : 1;
+        int i = 0;
         for (; i < node.entries.size(); i++)
             System.out.print(node.entries.get(i).getKey() + "/");
         System.out.println();
@@ -93,6 +94,7 @@ public class BPlusTree extends StringTree {
         }
 
         void putElement(String key, String obj, BPlusTree tree) {
+            
             if (isLeaf)
                 if (contains(key) || entries.size() < (2 * tree.minDegree - 1)) {
                     insertEntry(key, obj);
@@ -126,7 +128,7 @@ public class BPlusTree extends StringTree {
                 int i = 0;
                 while (i < entries.size() && key.compareTo(entries.get(i).getKey()) >= 0)
                     i++;
-                children.get(i - 1).putElement(key, obj, tree);
+                children.get(i == 0 ? 0 : (i - 1)).putElement(key, obj, tree);
             }
         }
 
