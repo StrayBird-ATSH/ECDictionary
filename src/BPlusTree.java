@@ -40,8 +40,9 @@ public class BPlusTree extends StringTree {
                 if (parentChild != node) child++;
                 else break;
         System.out.print("level=" + level + " child=" + child + " /");
-        for (SimpleEntry entry : node.entries)
-            System.out.print(entry.getKey() + "/");
+        int i = node.isLeaf ? 0 : 1;
+        for (; i < node.entries.size(); i++)
+            System.out.print(node.entries.get(i).getKey() + "/");
         System.out.println();
         if (!node.isLeaf)
             for (Node node1 : node.children)
@@ -198,7 +199,7 @@ public class BPlusTree extends StringTree {
 
         private void fix(@NotNull Node node) {
             if (node.entries.size() == node.children.size())
-                for (int i = 1; i < node.entries.size(); i++) {
+                for (int i = 0; i < node.entries.size(); i++) {
                     String key = node.children.get(i).entries.get(0).getKey();
                     if (!node.entries.get(i).getKey().equals(key)) {
                         node.entries.remove(i);
@@ -213,7 +214,7 @@ public class BPlusTree extends StringTree {
                     && node.children.size() <= (2 * minDegree - 1)
                     && node.children.size() >= 2) {
                 node.entries.clear();
-                for (int i = 1; i < node.children.size(); i++) {
+                for (int i = 0; i < node.children.size(); i++) {
                     String key = node.children.get(i).entries.get(0).getKey();
                     node.entries.add(new SimpleEntry<>(key, null));
                     if (!node.isRoot)
