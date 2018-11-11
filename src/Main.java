@@ -1,5 +1,12 @@
 public class Main {
     public static void main(String[] args) {
+
+
+
+
+
+
+
         RedBlackTree redBlackTree = new RedBlackTree();
         redBlackTree.put("7", "一");
         redBlackTree.put("3", "一");
