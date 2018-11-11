@@ -9,7 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class Launcher extends Application {
 
@@ -19,6 +22,8 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        RedBlackTree redBlackTree = new RedBlackTree();
+        BPlusTree bPlusTree = new BPlusTree(3);
         HBox[] leftHBoxes = new HBox[3];
         for (int i = 0; i < 3; i++)
             leftHBoxes[i] = new HBox(10);
@@ -28,6 +33,7 @@ public class Launcher extends Application {
 
         TextField path = new TextField();
         path.setPrefWidth(180);
+        path.setEditable(false);
         Button buttonBrowse = new Button("Browse");
         Button buttonSubmit = new Button("Submit");
         Button buttonAdd = new Button("Add");
@@ -103,6 +109,39 @@ public class Launcher extends Application {
         pane.setRight(vBox2);
         BorderPane.setAlignment(lbManagement, Pos.CENTER);
         pane.setPadding(new Insets(5));
+
+
+        buttonBrowse.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Please select the importing data files:");
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(
+                    "Plain text data file", "txt"));
+            File defaultPath = new File("D:\\Documents\\Data Structures" +
+                    " and Algorithms\\Project\\sample files");
+            if (defaultPath.exists())
+                fileChooser.setInitialDirectory(defaultPath);
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            path.setText(selectedFile == null ? null : selectedFile.getAbsolutePath());
+        });
+
+        buttonSubmit.setOnAction(event -> {
+            File file = new File(path.getText());
+            if (file.canRead())
+                if (rbRedBlack.isSelected())
+                    redBlackTree.importData(file);
+                else bPlusTree.importData(file);
+        });
+
+        button.setOnAction(event -> {
+            String key = tfLookUp.getText();
+            String resultString;
+            if (rbRedBlack.isSelected())
+                resultString = redBlackTree.get(key);
+            else resultString = bPlusTree.get(key);
+            System.out.println(resultString);
+            redBlackTree.preOrderPrint();
+            result.setText(resultString);
+        });
 
         // Create a scene and place it in the stage
         Scene scene = new Scene(pane, 720, 200);
