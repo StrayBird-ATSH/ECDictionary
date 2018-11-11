@@ -3,8 +3,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
@@ -23,7 +27,6 @@ public class Launcher extends Application {
             rightHBoxes[i] = new HBox(10);
 
 
-        Label lbLookUp = new Label("LOOK-UP");
         TextField path = new TextField();
         path.setPrefWidth(180);
         Button buttonBrowse = new Button("Browse");
@@ -40,11 +43,13 @@ public class Launcher extends Application {
         leftHBoxes[2].getChildren().addAll(buttonAdd, buttonDelete);
 
 
-        RadioButton rbRedBlack = new RadioButton("red-black tree");
+        RadioButton rbRedBlack = new RadioButton("Red-black tree");
         RadioButton rbBTree = new RadioButton("B+ tree");
         ToggleGroup toggleGroup = new ToggleGroup();
         rbRedBlack.setToggleGroup(toggleGroup);
         rbBTree.setToggleGroup(toggleGroup);
+        rbRedBlack.setFont(Font.font("Lucida console", FontWeight.BOLD, 12));
+        rbBTree.setFont(Font.font("Lucida console", FontWeight.BOLD, 12));
 
         TextField tfLookUp = new TextField();
         tfLookUp.setPrefWidth(200);
@@ -60,33 +65,49 @@ public class Launcher extends Application {
         rightHBoxes[2].getChildren().addAll(new Label("Search from"), tfSearch1,
                 new Label("to"), tfSearch2, btSubmit);
         Label label = new Label("Here  show the result");
+        label.setFont(Font.font("Calibri", FontWeight.BOLD, 12));
+        label.setTextFill(Paint.valueOf("RED"));
         label.setLabelFor(rightHBoxes[2]);
         VBox vBox1 = new VBox(10);
         vBox1.setAlignment(Pos.CENTER);
         vBox1.setPrefWidth(350);
         vBox1.setFillWidth(false);
         vBox1.getChildren().addAll(path, leftHBoxes[0], leftHBoxes[1], leftHBoxes[2]);
+
+
+        VBox vBox = new VBox(10);
+        vBox.getChildren().addAll(rightHBoxes[1], rightHBoxes[2], label);
+        Label lbLookUp = new Label("LOOK-UP", vBox);
+        lbLookUp.setContentDisplay(ContentDisplay.BOTTOM);
+        lbLookUp.setStyle("-fx-border-color: gray");
+        lbLookUp.setAlignment(Pos.CENTER);
+        lbLookUp.setPadding(new Insets(5));
+
         Label lbManagement = new Label("MANAGEMENT", vBox1);
         lbManagement.setContentDisplay(ContentDisplay.BOTTOM);
         lbManagement.setStyle("-fx-border-color: gray");
+        lbManagement.setAlignment(Pos.CENTER);
+        lbManagement.setPadding(new Insets(5));
+        lbManagement.setFont(Font.font("Verdana", FontWeight.BLACK, 14));
+
         VBox vBox2 = new VBox(10);
         vBox2.setAlignment(Pos.CENTER);
         vBox2.setPrefWidth(350);
-        vBox2.getChildren().addAll(rightHBoxes[0], lbLookUp, rightHBoxes[1], rightHBoxes[2], label);
-        lbLookUp.setAlignment(Pos.BOTTOM_LEFT);
-        lbManagement.setAlignment(Pos.CENTER);
-        lbManagement.setPadding(new Insets(5));
+        vBox2.getChildren().addAll(rightHBoxes[0], lbLookUp);
+        lbLookUp.setAlignment(Pos.CENTER_LEFT);
+        lbLookUp.setFont(Font.font("Verdana", FontWeight.BLACK, 14));
+
         BorderPane pane = new BorderPane();
         pane.setLeft(lbManagement);
         pane.setRight(vBox2);
         BorderPane.setAlignment(lbManagement, Pos.CENTER);
         pane.setPadding(new Insets(5));
+
         // Create a scene and place it in the stage
         Scene scene = new Scene(pane, 720, 300);
         primaryStage.setTitle("English-Chinese Dictionary");
         // Set the stage title
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
-
     }
 }
