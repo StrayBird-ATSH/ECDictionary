@@ -26,7 +26,6 @@ public class Launcher extends Application {
         for (int i = 0; i < 3; i++)
             rightHBoxes[i] = new HBox(10);
 
-
         TextField path = new TextField();
         path.setPrefWidth(180);
         Button buttonBrowse = new Button("Browse");
@@ -48,6 +47,7 @@ public class Launcher extends Application {
         ToggleGroup toggleGroup = new ToggleGroup();
         rbRedBlack.setToggleGroup(toggleGroup);
         rbBTree.setToggleGroup(toggleGroup);
+        rbRedBlack.setSelected(true);
         rbRedBlack.setFont(Font.font("Lucida console", FontWeight.BOLD, 12));
         rbBTree.setFont(Font.font("Lucida console", FontWeight.BOLD, 12));
 
@@ -68,15 +68,16 @@ public class Launcher extends Application {
         label.setFont(Font.font("Calibri", FontWeight.BOLD, 12));
         label.setTextFill(Paint.valueOf("RED"));
         label.setLabelFor(rightHBoxes[2]);
+        Label result = new Label("\n");
+
         VBox vBox1 = new VBox(10);
         vBox1.setAlignment(Pos.CENTER);
         vBox1.setPrefWidth(350);
         vBox1.setFillWidth(false);
         vBox1.getChildren().addAll(path, leftHBoxes[0], leftHBoxes[1], leftHBoxes[2]);
 
-
         VBox vBox = new VBox(10);
-        vBox.getChildren().addAll(rightHBoxes[1], rightHBoxes[2], label);
+        vBox.getChildren().addAll(rightHBoxes[1], rightHBoxes[2], label, result);
         Label lbLookUp = new Label("LOOK-UP", vBox);
         lbLookUp.setContentDisplay(ContentDisplay.BOTTOM);
         lbLookUp.setStyle("-fx-border-color: gray");
@@ -104,7 +105,7 @@ public class Launcher extends Application {
         pane.setPadding(new Insets(5));
 
         // Create a scene and place it in the stage
-        Scene scene = new Scene(pane, 720, 300);
+        Scene scene = new Scene(pane, 720, 200);
         primaryStage.setTitle("English-Chinese Dictionary");
         // Set the stage title
         primaryStage.setScene(scene); // Place the scene in the stage
