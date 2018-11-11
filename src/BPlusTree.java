@@ -1,9 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Set;
 
 public class BPlusTree extends StringTree {
@@ -51,7 +48,6 @@ public class BPlusTree extends StringTree {
             for (Node node1 : node.children)
                 preOrderPrint(level + 1, node1);
     }
-
 
 
     public Set<Entry<String, String>> entrySet() {
@@ -128,7 +124,7 @@ public class BPlusTree extends StringTree {
                 }
             else {
                 int i = 0;
-                while (i < entries.size() && key.compareTo(entries.get(i).getKey()) > 0)
+                while (i < entries.size() && key.compareTo(entries.get(i).getKey()) >= 0)
                     i++;
                 children.get(i - 1).putElement(key, obj, tree);
             }

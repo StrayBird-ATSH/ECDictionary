@@ -13,23 +13,19 @@ abstract class StringTree extends AbstractMap<String, String> {
 
     void importData(File file) {
         try {
-            Scanner scanner = new Scanner(file);
+            Scanner scanner = new Scanner(file, "GB18030");
             if (!scanner.hasNext())
                 return;
-            switch (scanner.nextLine()) {
-                case "INSERT":
-                    while (scanner.hasNextLine()) {
-                        String key = scanner.nextLine();
-                        String value = scanner.nextLine();
-                        this.put(key, value);
-                    }
-                    break;
-                case "DELETE":
-                    while (scanner.hasNextLine()) {
-                        String key = scanner.nextLine();
-                        this.remove(key);
-                    }
-                    break;
+            String option = scanner.nextLine();
+            if (option.equals("INSERT"))
+                while (scanner.hasNextLine()) {
+                    String key = scanner.nextLine();
+                    String value = scanner.nextLine();
+                    this.put(key, value);
+                }
+            else while (scanner.hasNextLine()) {
+                String key = scanner.nextLine();
+                this.remove(key);
             }
         } catch (FileNotFoundException e) {
             System.out.println("The specified file cannot be found");
