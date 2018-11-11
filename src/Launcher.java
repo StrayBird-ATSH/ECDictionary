@@ -23,7 +23,7 @@ public class Launcher extends Application {
     @Override
     public void start(Stage primaryStage) {
         RedBlackTree redBlackTree = new RedBlackTree();
-        BPlusTree bPlusTree = new BPlusTree(2);
+        BPlusTree bPlusTree = new BPlusTree(6);
         HBox[] leftHBoxes = new HBox[3];
         for (int i = 0; i < 3; i++)
             leftHBoxes[i] = new HBox(10);
@@ -157,6 +157,7 @@ public class Launcher extends Application {
         btSubmit.setOnAction(event -> {
             if (rbRedBlack.isSelected())
                 redBlackTree.searchScope(tfSearch1.getText(), tfSearch2.getText(), redBlackTree.getRoot());
+            else bPlusTree.searchScope(tfSearch1.getText(), tfSearch2.getText());
         });
 
         // Create a scene and place it in the stage

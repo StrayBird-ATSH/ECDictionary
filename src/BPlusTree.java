@@ -6,6 +6,7 @@ import java.util.Set;
 public class BPlusTree extends StringTree {
     Node root;
     private int minDegree;
+    private ArrayList<String> leafNode = new ArrayList<>();
 
     BPlusTree(int minDegree) {
         if (minDegree < 2) {
@@ -14,7 +15,6 @@ public class BPlusTree extends StringTree {
         }
         this.minDegree = minDegree;
         root = new Node(true, true);
-        ArrayList<String> leafNode = new ArrayList<>();
     }
 
     @Override
@@ -41,13 +41,20 @@ public class BPlusTree extends StringTree {
                 if (parentChild != node) child++;
                 else break;
         System.out.print("level=" + level + " child=" + child + " /");
-        int i = 0;
+        int i = node.isLeaf ? 0 : 1;
         for (; i < node.entries.size(); i++)
             System.out.print(node.entries.get(i).getKey() + "/");
         System.out.println();
         if (!node.isLeaf)
             for (Node node1 : node.children)
                 preOrderPrint(level + 1, node1);
+    }
+
+    void searchScope(String lowerBound, String upperBound) {
+        leafNode.sort(null);
+        for (String key : leafNode)
+            if (key.compareTo(lowerBound) >= 0 && key.compareTo(upperBound) <= 0)
+                System.out.println(key + " " + get(key));
     }
 
 
@@ -94,7 +101,8 @@ public class BPlusTree extends StringTree {
         }
 
         void putElement(String key, String obj, BPlusTree tree) {
-            
+            if (!leafNode.contains(key))
+                leafNode.add(key);
             if (isLeaf)
                 if (contains(key) || entries.size() < (2 * tree.minDegree - 1)) {
                     insertEntry(key, obj);
@@ -307,6 +315,7 @@ public class BPlusTree extends StringTree {
         }
 
         void remove(String key, BPlusTree tree) {
+            leafNode.remove(key);
             if (isLeaf) {
                 if (!contains(key))
                     return;
@@ -405,40 +414,5 @@ public class BPlusTree extends StringTree {
             if (index != -1)
                 entries.remove(index);
         }
-
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("isRoot: ");
-            sb.append(isRoot);
-            sb.append(", ");
-            sb.append("isLeaf: ");
-            sb.append(isLeaf);
-            sb.append(", ");
-            sb.append("keys: ");
-            for (SimpleEntry entry : entries) {
-                sb.append(entry.getKey());
-                sb.append(", ");
-            }
-            sb.append(", ");
-            return sb.toString();
-        }
-    }
-
-    public static void main(String[] args) {
-        BPlusTree tree = new BPlusTree(2);
-        for (int i = 10; i < 100; i++)
-            tree.put(Integer.toString(i), Integer.toString(i));
-        for (int j = 20; j < 30; j++)
-            tree.remove(Integer.toString(j));
-        for (int i = 0; i < 130; i += 6)
-            System.out.println(tree.get(Integer.toString(i)));
-        tree.preOrderPrint(0, tree.root);
-        BPlusTree tree1 = new BPlusTree(2);
-        tree1.put("7", "7");
-        tree1.put("3", "3");
-        tree1.put("5", "5");
-        tree1.put("1", "1");
-        tree1.put("6", "6");
-        tree.preOrderPrint(0, tree1.root);
     }
 }
