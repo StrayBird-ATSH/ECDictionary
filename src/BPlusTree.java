@@ -24,7 +24,7 @@ public class BPlusTree extends StringTree {
 
     @Override
     public String put(String key, String value) {
-        root.putElement(key, value, this);
+        root.putElement(key, value);
         return "Key = " + key + ", Value = " + value + " has been put into the tree";
     }
 
@@ -100,11 +100,11 @@ public class BPlusTree extends StringTree {
             return null;
         }
 
-        void putElement(String key, String obj, BPlusTree tree) {
+        void putElement(String key, String obj) {
             if (!leafNode.contains(key))
                 leafNode.add(key);
             if (isLeaf)
-                if (contains(key) || entries.size() < (2 * tree.minDegree - 1)) {
+                if (contains(key) || entries.size() < (2 * minDegree - 1)) {
                     insertEntry(key, obj);
                     if (parent != null)
                         parent.fixAfterInsert();
@@ -123,8 +123,8 @@ public class BPlusTree extends StringTree {
                     right.previous = left;
                     previous = null;
                     next = null;
-                    int leftSize = tree.minDegree + (2 * tree.minDegree) % 2;
-                    int rightSize = tree.minDegree;
+                    int leftSize = minDegree + (2 * minDegree) % 2;
+                    int rightSize = minDegree;
                     insertEntry(key, obj);
                     for (int i = 0; i < leftSize; i++)
                         left.entries.add(entries.get(i));
@@ -136,7 +136,7 @@ public class BPlusTree extends StringTree {
                 int i = 0;
                 while (i < entries.size() && key.compareTo(entries.get(i).getKey()) >= 0)
                     i++;
-                children.get(i == 0 ? 0 : (i - 1)).putElement(key, obj, tree);
+                children.get(i == 0 ? 0 : (i - 1)).putElement(key, obj);
             }
         }
 
