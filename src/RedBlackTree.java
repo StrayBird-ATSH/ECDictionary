@@ -279,7 +279,7 @@ public class RedBlackTree extends StringTree {
                     currentNode = currentNode.right;
                 }
             } else {
-                if (currentNode == root) break;
+                if (currentNode == root || currentNode == null) break;
                 level--;
                 previousNode = currentNode;
                 currentNode = currentNode.parent;

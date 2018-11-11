@@ -143,6 +143,17 @@ public class Launcher extends Application {
             result.setText(resultString);
         });
 
+        buttonAdd.setOnAction(event -> {
+            if (rbRedBlack.isSelected())
+                redBlackTree.put(addEnglish.getText(), addChinese.getText());
+            else bPlusTree.put(addEnglish.getText(), addChinese.getText());
+        });
+        buttonDelete.setOnAction(event -> {
+            if (rbRedBlack.isSelected())
+                redBlackTree.remove(addEnglish.getText());
+            else bPlusTree.remove(addEnglish.getText());
+        });
+
         // Create a scene and place it in the stage
         Scene scene = new Scene(pane, 720, 200);
         primaryStage.setTitle("English-Chinese Dictionary");
