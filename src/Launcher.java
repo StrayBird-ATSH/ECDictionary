@@ -138,7 +138,7 @@ public class Launcher extends Application {
             if (rbRedBlack.isSelected())
                 resultString = redBlackTree.get(key);
             else resultString = bPlusTree.get(key);
-            bPlusTree.preOrderPrint(0, bPlusTree.root);
+            bPlusTree.preOrderPrint();
             result.setText(resultString);
         });
 

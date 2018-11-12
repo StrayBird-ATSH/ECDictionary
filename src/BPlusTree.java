@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class BPlusTree extends StringTree {
-    Node root;
+    private Node root;
     private int minDegree;
     private ArrayList<String> leafNode = new ArrayList<>();
 
@@ -34,7 +34,12 @@ public class BPlusTree extends StringTree {
         return "Entry key = " + key + " has been removed";
     }
 
-    void preOrderPrint(int level, @NotNull Node node) {
+    @Override
+    void preOrderPrint() {
+        preOrderPrint(0, root);
+    }
+
+    private void preOrderPrint(int level, @NotNull Node node) {
         int child = 0;
         if (!node.isRoot)
             for (Node parentChild : node.parent.children)
