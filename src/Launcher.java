@@ -143,15 +143,21 @@ public class Launcher extends Application {
         });
 
         buttonAdd.setOnAction(event -> {
+            long time = System.currentTimeMillis();
             if (rbRedBlack.isSelected())
                 redBlackTree.put(addEnglish.getText(), addChinese.getText());
             else bPlusTree.put(addEnglish.getText(), addChinese.getText());
+            System.out.println("The time used for this operation is " +
+                    (System.currentTimeMillis() - time));
         });
 
         buttonDelete.setOnAction(event -> {
+            long time = System.currentTimeMillis();
             if (rbRedBlack.isSelected())
                 redBlackTree.remove(addEnglish.getText());
             else bPlusTree.remove(addEnglish.getText());
+            System.out.println("The time used for this operation is " +
+                    (System.currentTimeMillis() - time));
         });
 
         btSubmit.setOnAction(event -> {

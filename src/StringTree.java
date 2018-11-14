@@ -20,12 +20,15 @@ abstract class StringTree extends AbstractMap<String, String> {
             if (!scanner.hasNext())
                 return;
             String option = scanner.nextLine();
-            long srartTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             if (option.equals("INSERT"))
                 while (scanner.hasNextLine()) {
                     count++;
                     if (count < 500 && count % 100 == 0) {
                         this.preOrderPrint();
+                        System.out.println("The time consumed is " +
+                                (System.currentTimeMillis() - startTime));
+                        startTime = System.currentTimeMillis();
                         System.out.println("The pre-order print of size " + count + "\n\n\n\n");
                     }
                     String key = scanner.nextLine();
@@ -36,13 +39,16 @@ abstract class StringTree extends AbstractMap<String, String> {
                 count++;
                 if (count < 500 && count % 100 == 0) {
                     this.preOrderPrint();
+                    System.out.println("The time consumed is " +
+                            (System.currentTimeMillis() - startTime));
+                    startTime = System.currentTimeMillis();
                     System.out.println("The pre-order print of size " + count);
                 }
                 String key = scanner.nextLine();
                 this.remove(key);
             }
-            System.out.println("The time consuming for the selected operation is: " +
-                    (System.currentTimeMillis() - srartTime));
+            System.out.println("The total time consuming for the selected operation is: " +
+                    (System.currentTimeMillis() - startTime));
         } catch (FileNotFoundException e) {
             System.out.println("The specified file cannot be found");
         }
