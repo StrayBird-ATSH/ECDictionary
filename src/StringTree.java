@@ -26,7 +26,7 @@ abstract class StringTree extends AbstractMap<String, String> {
                     count++;
                     if (count < 500 && count % 100 == 0) {
                         this.preOrderPrint();
-                        System.out.println("The pre-order print of size " + count);
+                        System.out.println("The pre-order print of size " + count + "\n\n\n\n");
                     }
                     String key = scanner.nextLine();
                     String value = scanner.nextLine();
