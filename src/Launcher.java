@@ -133,13 +133,15 @@ public class Launcher extends Application {
         });
 
         button.setOnAction(event -> {
+            long time = System.currentTimeMillis();
             String key = tfLookUp.getText();
             String resultString;
             if (rbRedBlack.isSelected())
                 resultString = redBlackTree.get(key);
             else resultString = bPlusTree.get(key);
-            bPlusTree.preOrderPrint();
             result.setText(resultString);
+            System.out.println("The time used for this operation is " +
+                    (System.currentTimeMillis() - time));
         });
 
         buttonAdd.setOnAction(event -> {

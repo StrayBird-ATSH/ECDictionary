@@ -4,6 +4,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
+/**
+ * A Red-Black tree based {@link StringTree} implementation.
+ * The map is sorted according to the {@linkplain Comparable natural
+ * ordering} of its keys, in this case by the comparator defined
+ * in the {@link String} Class
+ *
+ * <p>This implementation provides guaranteed log(n) time cost for the
+ * {@code containsKey}, {@code get}, {@code put} and {@code remove}
+ * operations.  Algorithms are adaptations of those in Cormen, Leiserson, and
+ * Rivest's <em>Introduction to Algorithms</em>.
+ *
+ * <p>Note that the ordering maintained by a tree map, like any sorted map, and
+ * whether or not an explicit comparator is provided, must be <em>consistent
+ * with {@code equals}</em> if this sorted map is to correctly implement the
+ * {@code Map} interface.  (See {@code Comparable} or {@code Comparator} for a
+ * precise definition of <em>consistent with equals</em>.)  This is so because
+ * the {@code Map} interface is defined in terms of the {@code equals}
+ * operation, but a sorted map performs all key comparisons using its {@code
+ * compareTo} (or {@code compare}) method, so two keys that are deemed equal by
+ * this method are, from the standpoint of the sorted map, equal.  The behavior
+ * of a sorted map <em>is</em> well-defined even if its ordering is
+ * inconsistent with {@code equals}; it just fails to obey the general contract
+ * of the {@code Map} interface.
+ *
+ */
 public class RedBlackTree extends StringTree {
     private RBTreeEntry root;
     private EntrySet entrySet;
